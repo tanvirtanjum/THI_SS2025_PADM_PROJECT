@@ -1,17 +1,18 @@
 import sys
-# import time
 import numpy as np
 import gymnasium as gym
 import pygame
 
 class CustomEnv(gym.Env):
     def __init__(self, 
-                 grid_size = 9, 
-                 goal_coordinates = {'Bar1' : np.array([3, 8]), 
-                                     'Bar2' : np.array([4, 8]), 
-                                     'Bar3' : np.array([5, 8])}, 
-                 random_initialization = False,
-                 sound = True) -> None:
+                grid_size = 9, 
+                goal_coordinates = {
+                    'Bar1' : np.array([3, 8]), 
+                    'Bar2' : np.array([4, 8]), 
+                    'Bar3' : np.array([5, 8])
+                }, 
+                random_initialization = False,
+                sound = True) -> None:
         super().__init__()
 
         self.step_count = 0
@@ -85,7 +86,10 @@ class CustomEnv(gym.Env):
         #! Modification: None
         
     def addDanger(self, coordinates, role):
-        self.danger_states.append({'coordinates': coordinates, 'role': role})
+        self.danger_states.append({
+            'coordinates': coordinates, 
+            'role': role
+        })
         
     def distanceToGoal(self):
         # Euclidean Distance
@@ -116,7 +120,6 @@ class CustomEnv(gym.Env):
         # Down: 1
         if action==1 and self.state[0]<self.grid_size-1:
             self.state[0] += 1
-
 
         # Right: 2
         if action==2 and self.state[1]<self.grid_size-1:
@@ -157,16 +160,16 @@ class CustomEnv(gym.Env):
         return self.state, self.done, self.reward, self.info
 
     def render(self):
-        # Code for closing the window
+        # Closing the window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-        # Background:
-        # -----------
+        # Background Color:
         self.screen.fill((11, 74, 1))
 
+        # Field Grass
         self.background_image = pygame.transform.scale(
             self.background_image,
             (self.cell_size * self.grid_size, self.cell_size * self.grid_size)
@@ -174,7 +177,7 @@ class CustomEnv(gym.Env):
         
         self.screen.blit(self.background_image, (0, 0))  # Draw image background
 
-        # # Draw gridlines:
+        # # Code for grid lines:
         # for col in range(self.grid_size):
         #     for row in range(self.grid_size):
         #         grid = pygame.Rect(col*self.cell_size,
@@ -186,7 +189,7 @@ class CustomEnv(gym.Env):
         #                          grid,
         #                          1)
                 
-        # Add danger states:
+        # Opponent & GK:
         for each_danger in self.danger_states:
             temp_obstacle_image = self.obstacle_image
             if each_danger['role'] == "GK":
@@ -206,7 +209,7 @@ class CustomEnv(gym.Env):
             self.obstacle_image = temp_obstacle_image
             
             
-        # Draw agent:
+        # Player:
         self.agent_image = pygame.transform.scale(
             self.agent_image,
             (self.cell_size, self.cell_size)
@@ -223,64 +226,19 @@ class CustomEnv(gym.Env):
     def close(self):
         pygame.quit()
         
-# Function 1: Create an instance of the environment
-# -----------
+# Instance
 def createEnv(goal_coordinates,
             danger_coordinates,
             random_initialization,
             sound):
     
-    
-    # Create the environment:
-    # -----------------------
     env = CustomEnv(goal_coordinates=goal_coordinates,
                 random_initialization=random_initialization,
                 sound=sound)
 
     if env.sound:
-                env.channel_joy.play(env.sound_effect_joy)
+        env.channel_joy.play(env.sound_effect_joy)
     for danger in danger_coordinates:
         env.addDanger(coordinates = danger['coordinates'], role = danger['role'])
 
     return env
-
-# if __name__=="__main__":
-#     pygame.mixer.init()  # Initialize the mixer module.
-#     sound_effect_joy = pygame.mixer.Sound("./resources/audio/JOY.mp3")  # Load a sound.
-#     #? Source: Sound Effect by freesound_community from Pixabay [https://pixabay.com/sound-effects/running-in-grass-6237/]
-#     #! License: Free (https://pixabay.com/service/license-summary/)
-#     #! Modification: None
-#     sound_effect_joy.play()
-    
-#     for _ in range(100):
-#         env = CustomEnv(grid_size=9)
-#         # 1st Line Defenders
-#         env.addDanger(coordinates=(3, 2), role="D")
-#         env.addDanger(coordinates=(5, 2), role="D")
-#         # 2nd Line Defenders
-#         env.addDanger(coordinates=(1, 5), role="D")
-#         env.addDanger(coordinates=(4, 4), role="D")
-#         env.addDanger(coordinates=(7, 5), role="D")
-#         #  Goal Keeper
-#         env.addDanger(coordinates=(4, 6), role="GK")
-
-#         state, info = env.reset()
-#         env.render()
-
-#         print("Initial_state: ", state, "Distance to goal: ", info["Distance to goal"])
-
-#         for _ in range(15):
-#             # action = int(input("Choose an action: "))
-#             # next_step, done, reward, info = env.step(action)
-            
-#             next_step, done, reward, info = env.step(env.action_space.sample())
-
-#             env.render()
-
-#             print(f"Next-state: {next_step}, Done: {done}, Reward: {reward}, Distance to goal: {info['Distance to goal']}")
-
-#             if done:
-#                 env.close()
-#                 break
-            
-#         env.close()

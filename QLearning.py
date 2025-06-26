@@ -1,5 +1,3 @@
-# Imports:
-# --------
 import numpy as np
 import os
 import seaborn as sns
@@ -70,16 +68,20 @@ def train_q_learning(env,
 # Function 2: Visualize the Q-table
 # -----------
 def visualize_q_table(danger_coordinates=[
-                            {"coordinates": (3, 2), "role": "D"},
-                            {"coordinates": (5, 2), "role": "D"},
-                            {"coordinates": (1, 5), "role": "D"},
-                            {"coordinates": (4, 4), "role": "D"},
-                            {"coordinates": (7, 5), "role": "D"},
-                            {"coordinates": (4, 6), "role": "GK"}
-                        ],
-                      goal_coordinates={'Bar1': np.array([3, 8]), 'Bar2': np.array([4, 8]), 'Bar3': np.array([5, 8])},
-                      actions=["Up", "Down", "Right", "Left"],
-                      q_values_path="q_table.npy"):
+                        {"coordinates": (3, 2), "role": "D"},
+                        {"coordinates": (5, 2), "role": "D"},
+                        {"coordinates": (1, 5), "role": "D"},
+                        {"coordinates": (4, 4), "role": "D"},
+                        {"coordinates": (7, 5), "role": "D"},
+                        {"coordinates": (4, 6), "role": "GK"}
+                    ],
+                    goal_coordinates={
+                        'Bar1': np.array([3, 8]), 
+                        'Bar2': np.array([4, 8]), 
+                        'Bar3': np.array([5, 8])
+                    },
+                    actions=["Up", "Down", "Right", "Left"],
+                    q_values_path="q_table.npy"):
 
     tempDanger = [d['coordinates'] for d in danger_coordinates]
     danger_coordinates = tempDanger

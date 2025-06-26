@@ -1,13 +1,14 @@
-# Imports:
-# --------
 import numpy as np
 from CustomEnv import createEnv
 from QLearning import train_q_learning, visualize_q_table, test_q_learning
 
-# User definitions:
+# Settings:
 # -----------------
+# ! train = True : System will train the agent. train = False : It won't train.
 train = True
+# ! visualize_results = True : Save the learning data as image. visualize_results = False : It won't save.
 visualize_results = True
+# ! test = True : Only exploit using q_table.npy. test = False : It won't test.
 test = False
 
 """
@@ -23,18 +24,11 @@ epsilon_min = 0.1  # Minimum exploration rate
 epsilon_decay = 0.995  # Decay rate for exploration
 no_episodes = 1_000  # Number of episodes
 
-goal_coordinates = {'Bar1' : np.array([3, 8]), 'Bar2' : np.array([4, 8]), 'Bar3' : np.array([5, 8])}
-
-# Define all hell state coordinates as a tuple within a list
- # 1st Line Defenders
-#         env.addDanger(coordinates=(3, 2), role="D")
-#         env.addDanger(coordinates=(5, 2), role="D")
-#         # 2nd Line Defenders
-#         env.addDanger(coordinates=(1, 5), role="D")
-#         env.addDanger(coordinates=(4, 4), role="D")
-#         env.addDanger(coordinates=(7, 5), role="D")
-#         #  Goal Keeper
-#         env.addDanger(coordinates=(4, 6), role="GK")
+goal_coordinates = {
+    'Bar1' : np.array([3, 8]), 
+    'Bar2' : np.array([4, 8]), 
+    'Bar3' : np.array([5, 8])
+}
 
 danger_coordinates = [
     {"coordinates": (3, 2), "role": "D"},
@@ -52,21 +46,21 @@ if train:
     # Create an instance of the environment:
     # --------------------------------------
     env = createEnv(goal_coordinates=goal_coordinates,
-                     danger_coordinates=danger_coordinates,
-                     random_initialization=random_initialization,
-                     sound=True)
+                    danger_coordinates=danger_coordinates,
+                    random_initialization=random_initialization,
+                    sound=True)
 
     # Train a Q-learning agent:
     # -------------------------
     train_q_learning(env=env,
-                     no_episodes=no_episodes,
-                     epsilon=epsilon,
-                     epsilon_min=epsilon_min,
-                     epsilon_decay=epsilon_decay,
-                     alpha=learning_rate,
-                     gamma=gamma,
-                     random_init=False,
-                     render=True)
+                    no_episodes=no_episodes,
+                    epsilon=epsilon,
+                    epsilon_min=epsilon_min,
+                    epsilon_decay=epsilon_decay,
+                    alpha=learning_rate,
+                    gamma=gamma,
+                    random_init=False,
+                    render=True)
 
 if visualize_results:
     # Visualize the Q-table:
@@ -77,8 +71,9 @@ if visualize_results:
     
 if test:
     env = createEnv(goal_coordinates=goal_coordinates,
-                     danger_coordinates=danger_coordinates,
-                     random_initialization=random_initialization,
-                     sound=True)
+                    danger_coordinates=danger_coordinates,
+                    random_initialization=random_initialization,
+                    sound=True)
+    
     test_q_learning(env, q_table_path="q_table.npy", render=True)
 
