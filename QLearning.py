@@ -2,11 +2,11 @@ import numpy as np
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+
 from FileSystem import FileSystem
 
 
-# Function 1: Train Q-learning agent
-# -----------
+# ? Train Q-learning agent
 def train_q_learning(env,
                      no_episodes,
                      epsilon,
@@ -14,19 +14,17 @@ def train_q_learning(env,
                      epsilon_decay,
                      alpha,
                      gamma,
-                     q_table_save_path="q_table.npy",
-                     random_init=False,
-                     render=False):
+                     q_table_save_path = "q_table.npy",
+                     random_init = False,
+                     render = False):
 
-    # Initialize the Q-table:
-    # -----------------------
+    # ? Initialize the Q-table:
     if random_init:
         q_table = np.random.rand(env.grid_size, env.grid_size, env.action_space.n)
     else:
         q_table = np.zeros((env.grid_size, env.grid_size, env.action_space.n))
 
-    # Q-learning algorithm:
-    # ---------------------
+    # ! Q-learning algorithm:
     for episode in range(no_episodes):
         state, _ = env.reset()
         
@@ -65,8 +63,7 @@ def train_q_learning(env,
     print("Saved the Q-table.")
 
 
-# Function 2: Visualize the Q-table
-# -----------
+# ? Visualize the Q-table
 def visualize_q_table(danger_coordinates=[
                         {"coordinates": (3, 2), "role": "D"},
                         {"coordinates": (5, 2), "role": "D"},
@@ -90,28 +87,28 @@ def visualize_q_table(danger_coordinates=[
 
     try:
         q_table = np.load(q_values_path)
-        _, axes = plt.subplots(1, 4, figsize=(20, 5))
+        _, axes = plt.subplots(1, 4, figsize = (20, 5))
 
         for i, action in enumerate(actions):
             ax = axes[i]
             heatmap_data = q_table[:, :, i].copy()
 
-            mask = np.zeros_like(heatmap_data, dtype=bool)
+            mask = np.zeros_like(heatmap_data, dtype = bool)
             for coord in goal_coordinates + danger_coordinates:
                 mask[coord[0], coord[1]] = True
 
-            sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap="viridis",
-                        ax=ax, cbar=False, mask=mask, annot_kws={"size": 9})
+            sns.heatmap(heatmap_data, annot = True, fmt=".2f", cmap = "viridis",
+                        ax = ax, cbar = False, mask = mask, annot_kws = {"size": 9})
 
             for g in goal_coordinates:
-                ax.text(g[1] + 0.5, g[0] + 0.5, 'G', color='green',
-                        ha='center', va='center', weight='bold', fontsize=14)
+                ax.text(g[1] + 0.5, g[0] + 0.5, 'G', color = 'green',
+                        ha = 'center', va = 'center', weight = 'bold', fontsize = 14)
             for d in danger_coordinates:
-                ax.text(d[1] + 0.5, d[0] + 0.5, 'H', color='red',
-                        ha='center', va='center', weight='bold', fontsize=14)
+                ax.text(d[1] + 0.5, d[0] + 0.5, 'H', color = 'red',
+                        ha = 'center', va = 'center', weight = 'bold', fontsize = 14)
 
             ax.set_title(f'Action: {action}')
-            
+        # Saving Q-Table visual data  
         FS = FileSystem()
         plt.tight_layout()
         plt.savefig("./Learning Data/"+FS.getNewFileName(extension=".png")+".png")
@@ -121,9 +118,7 @@ def visualize_q_table(danger_coordinates=[
         print("No saved Q-table was found. Please train the Q-learning agent first or check your path.")
 
 
-# Function 3: Test with the Q-table
-# -----------
-
+# ? Test with the Q-table
 def test_q_learning(env, q_table_path="q_table.npy", render=True):
     # Load the trained Q-table
     if os.path.isfile(q_table_path):
@@ -139,7 +134,7 @@ def test_q_learning(env, q_table_path="q_table.npy", render=True):
         step_count = 0
 
         while True:
-            action = np.argmax(q_table[state])  # Exploit only (no exploration)
+            action = np.argmax(q_table[state])  # ! Exploit only (no exploration)
             next_state, done, reward, info = env.step(action)
             if render:
                 env.render()

@@ -15,6 +15,7 @@ class FileSystem:
         return sort_files
     
 
+    # Incremental File name selection
     def getNewFileName(self, extension):
         files = self.getFiles(extension = extension)
         lastFile =  None if len(files) <= 0 else os.path.splitext(os.path.basename(files[len(files)-1]))[0]
