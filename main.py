@@ -5,11 +5,11 @@ from QLearning import train_q_learning, visualize_q_table, test_q_learning
 
 # ? Setting Flags
 # ! train = True : System will train the agent. train = False : It won't train.
-train = True
+train = False
 # ! visualize_results = True : Save the learning data as image. visualize_results = False : It won't save.
 visualize_results = train
 # ! test = True : Only exploit using q_table.npy. test = False : It won't test.
-test = False
+test = True
 # ! render = True : Render the Environment. render = False : It won't render.
 render = True
 # ! sound = True : Play sound. sound = False : It won't play.
